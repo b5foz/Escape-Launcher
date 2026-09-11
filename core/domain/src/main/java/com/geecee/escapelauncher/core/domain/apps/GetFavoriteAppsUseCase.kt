@@ -21,7 +21,14 @@ class GetFavoriteAppsUseCase @Inject constructor(
             modifiedAppsRepository.getFavouriteAppsInOrderFlow()
         ) { apps, entities ->
             entities.mapNotNull { entity ->
-                apps.find { it.packageName == entity.packageId }
+                apps.find { it.packageName == entity.packageId }?.let { app ->
+                    val customName = entity.displayName
+                    if (customName != null) {
+                        app.copy(displayName = customName)
+                    } else {
+                        app
+                    }
+                }
             }
         }
     }

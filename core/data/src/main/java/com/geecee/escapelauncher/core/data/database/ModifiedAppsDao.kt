@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.geecee.escapelauncher.core.data.entity.ModifiedAppEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ModifiedAppsDao {
@@ -105,6 +106,9 @@ interface ModifiedAppsDao {
         )
     }
 
+    @Query("SELECT * FROM modifiedApps")
+    fun getAllModifiedAppsFlow(): Flow<List<ModifiedAppEntity>>
+
     @Query(
         """
         SELECT *
@@ -134,7 +138,7 @@ interface ModifiedAppsDao {
         ORDER BY COALESCE(displayName, packageId) COLLATE NOCASE ASC
         """
     )
-    fun getChallengePackageIdsFlow(): kotlinx.coroutines.flow.Flow<List<String>>
+    fun getChallengePackageIdsFlow(): Flow<List<String>>
 
     @Query(
         """

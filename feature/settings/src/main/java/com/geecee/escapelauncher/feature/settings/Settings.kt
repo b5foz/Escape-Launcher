@@ -43,6 +43,8 @@ import com.geecee.escapelauncher.feature.settings.mainpage.MainSettingsPage
 import com.geecee.escapelauncher.feature.settings.openchallenges.OpenChallengeViewModel
 import com.geecee.escapelauncher.feature.settings.theme.ThemeOptions
 import com.geecee.escapelauncher.feature.settings.widget.WidgetOptions
+import com.geecee.escapelauncher.feature.settings.renamedapps.RenamedApps
+import com.geecee.escapelauncher.feature.settings.renamedapps.RenamedAppsViewModel
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
@@ -79,6 +81,9 @@ sealed interface SettingsNavKey : NavKey {
 
     @Serializable
     data object FontLicences : SettingsNavKey
+
+    @Serializable
+    data object RenamedApps : SettingsNavKey
 }
 
 //
@@ -246,6 +251,13 @@ fun Settings(
                     FontLicenceDialog(context = context) {
                         backStack.removeLastOrNull()
                     }
+                }
+                entry<SettingsNavKey.RenamedApps> {
+                    val renamedViewModel: RenamedAppsViewModel = hiltViewModel()
+                    RenamedApps(
+                        onBackClicked = { backStack.removeLastOrNull() },
+                        viewModel = renamedViewModel
+                    )
                 }
             }
         )

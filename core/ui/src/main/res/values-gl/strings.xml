@@ -12,6 +12,10 @@
     <string name="add_to_fav">Engadir a Favoritas</string>
     <string name="rem_from_fav">Retirar das Favoritas</string>
     <string name="add_open_challenge">Engadir conta atrás para abrir</string>
+    <string name="rename">Renomear</string>
+    <string name="rename_app">Renomear aplicación</string>
+    <string name="save">Gardar</string>
+    <string name="cancel">Cancelar</string>
     <string name="app_info">Info da App</string>
     <string name="search">Buscar</string>
     <string name="unlock_private_space">Desbloquear Espazo Privado</string>

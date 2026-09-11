@@ -18,16 +18,27 @@ class SearchAppsUseCase @Inject constructor(
         return combine(
             appsRepository.mainUserApps,
             modifiedAppsRepository.getHiddenPackageIdsFlow(),
+            modifiedAppsRepository.getAllModifiedAppsFlow(),
             queryFlow,
             showHiddenFlow
-        ) { allApps, hiddenIds, rawQuery, showHidden ->
+        ) { allApps, hiddenIds, modifiedApps, rawQuery, showHidden ->
             val query = rawQuery.trim()
             val hiddenSet = hiddenIds.toSet()
+            val modifiedAppsMap = modifiedApps.associateBy { it.packageId }
+
+            val appsWithRenames = allApps.map { app ->
+                val customName = modifiedAppsMap[app.packageName]?.displayName
+                if (customName != null) {
+                    app.copy(displayName = customName)
+                } else {
+                    app
+                }
+            }
 
             val filtered = if (query.isBlank()) {
-                allApps.filter { !hiddenSet.contains(it.packageName) }
+                appsWithRenames.filter { !hiddenSet.contains(it.packageName) }.sortedBy { it.displayName.lowercase() }
             } else {
-                allApps.filter { app ->
+                appsWithRenames.filter { app ->
                     val isHidden = hiddenSet.contains(app.packageName)
                     val matchesQuery = fuzzyMatch(app.displayName, query)
                     matchesQuery && (!isHidden || showHidden)

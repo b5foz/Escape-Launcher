@@ -11,6 +11,7 @@ sealed class AppActionType {
     object Hide : AppActionType()
     object AppInfo : AppActionType()
     object AddChallenge : AppActionType()
+    object Rename : AppActionType()
 }
 
 class GetAppActionsUseCase @Inject constructor(
@@ -28,6 +29,7 @@ class GetAppActionsUseCase @Inject constructor(
                 add(AppActionType.Uninstall)
                 add(AppActionType.ToggleFavorite(isFavorite))
                 add(AppActionType.Hide)
+                add(AppActionType.Rename)
                 add(AppActionType.AppInfo)
                 if (!hasChallenge) {
                     add(AppActionType.AddChallenge)

@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -28,8 +29,12 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.filled.WbSunny
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SheetValue
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -107,6 +112,7 @@ fun HomeScreen(
     val bottomSheetApp by homeScreenViewModel.bottomSheetApp.collectAsState()
     val bottomSheetActions by homeScreenViewModel.bottomSheetActions.collectAsState()
     val shortcutActions by homeScreenViewModel.shortcutActions.collectAsState()
+    val showRenameDialog by homeScreenViewModel.showRenameDialog.collectAsState()
 
     val (hour, minute, _) = timeParts
 
@@ -356,9 +362,51 @@ fun HomeScreen(
                 sheetState = rememberBottomSheetState(initialValue = SheetValue.Hidden)
             )
         }
+
+        // Rename Dialog
+        if (showRenameDialog && bottomSheetApp != null) {
+            RenameAppDialog(
+                app = bottomSheetApp!!,
+                onDismiss = { homeScreenViewModel.setRenameDialogVisible(false) },
+                onConfirm = { newName ->
+                    homeScreenViewModel.renameApp(bottomSheetApp!!.packageName, newName)
+                    homeScreenViewModel.setRenameDialogVisible(false)
+                }
+            )
+        }
     }
 }
 
+@Composable
+fun RenameAppDialog(
+    app: InstalledApp,
+    onDismiss: () -> Unit,
+    onConfirm: (String) -> Unit
+) {
+    var name by remember { mutableStateOf(app.displayName) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.rename_app)) },
+        text = {
+            OutlinedTextField(
+                value = name,
+                onValueChange = { name = it },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = { onConfirm(name) }) {
+                Text(stringResource(R.string.save))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel))
+            }
+        }
+    )
+}
 
 @Composable
 fun HomeWeatherImpl(

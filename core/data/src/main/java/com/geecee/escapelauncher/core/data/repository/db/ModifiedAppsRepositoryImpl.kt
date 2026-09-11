@@ -13,6 +13,11 @@ import javax.inject.Singleton
 class ModifiedAppsRepositoryImpl @Inject constructor(
     private val modifiedAppsDao: ModifiedAppsDao
 ) : ModifiedAppsRepository {
+    override fun getAllModifiedAppsFlow(): Flow<List<ModifiedApp>> =
+        modifiedAppsDao.getAllModifiedAppsFlow().map { entities ->
+            entities.map { it.asExternalModel() }
+        }
+
     override fun getHiddenPackageIdsFlow(): Flow<List<String>> =
         modifiedAppsDao.getHiddenPackageIdsFlow()
 

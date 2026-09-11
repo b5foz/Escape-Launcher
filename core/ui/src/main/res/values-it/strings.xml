@@ -28,6 +28,10 @@
     <string name="add_to_fav">Aggiungi ai Preferiti</string>
     <string name="rem_from_fav">Rimuovi dai Preferiti</string>
     <string name="add_open_challenge">Aggiungi Conto alla Rovescia per Apertura</string>
+    <string name="rename">Rinomina</string>
+    <string name="rename_app">Rinomina app</string>
+    <string name="save">Salva</string>
+    <string name="cancel">Annulla</string>
     <string name="app_info">Info App</string>
     <string name="search">Cerca</string>
     <string name="unlock_private_space">Sblocca Spazio Privato</string>

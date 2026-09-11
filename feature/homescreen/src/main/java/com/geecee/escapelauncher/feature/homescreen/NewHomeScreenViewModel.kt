@@ -107,6 +107,19 @@ class NewHomeScreenViewModel @Inject constructor(
         analyticsProxy.recordException(e)
     }
 
+    // Rename
+    private val _showRenameDialog = MutableStateFlow(false)
+    val showRenameDialog: StateFlow<Boolean> = _showRenameDialog.asStateFlow()
+    fun setRenameDialogVisible(visibility: Boolean) {
+        _showRenameDialog.value = visibility
+    }
+    fun renameApp(packageName: String, newName: String) {
+        viewModelScope.launch {
+            modifiedAppsRepository.setDisplayName(packageName, newName.trim().ifBlank { null })
+            modifiedAppsRepository.tidyFavouritePositions()
+        }
+    }
+
     // Actions
     val bottomSheetActions: StateFlow<List<AppAction>> = _bottomSheetApp.flatMapLatest { app ->
         if (app == null) flowOf(emptyList())
@@ -160,6 +173,14 @@ class NewHomeScreenViewModel @Inject constructor(
                                 modifiedAppsRepository.setChallenge(clickedApp.packageName, true)
                                 _showBottomSheet.value = false
                             }
+                        }
+                    )
+                    AppActionType.Rename -> AppAction(
+                        labelRes = R.string.rename,
+                        isVisible = { it.isMainUserApp() },
+                        onClick = { clickedApp ->
+                            _showBottomSheet.value = false
+                            _showRenameDialog.value = true
                         }
                     )
                 }

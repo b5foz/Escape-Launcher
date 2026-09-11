@@ -96,6 +96,19 @@ class AppsListViewModel @Inject constructor(
     private val _bottomSheetApp = MutableStateFlow<InstalledApp?>(null)
     val bottomSheetApp: StateFlow<InstalledApp?> = _bottomSheetApp.asStateFlow()
 
+    // Rename
+    private val _showRenameDialog = MutableStateFlow(false)
+    val showRenameDialog: StateFlow<Boolean> = _showRenameDialog.asStateFlow()
+    fun setRenameDialogVisible(visibility: Boolean) {
+        _showRenameDialog.value = visibility
+    }
+    fun renameApp(packageName: String, newName: String) {
+        viewModelScope.launch {
+            modifiedAppsRepository.setDisplayName(packageName, newName.trim().ifBlank { null })
+            modifiedAppsRepository.tidyFavouritePositions()
+        }
+    }
+
     // Actions
     val bottomSheetActions: StateFlow<List<AppAction>> = _bottomSheetApp.flatMapLatest { app ->
         if (app == null) flowOf(emptyList())
@@ -132,6 +145,14 @@ class AppsListViewModel @Inject constructor(
                                 modifiedAppsRepository.setHidden(clickedApp.packageName, true)
                                 _showBottomSheet.value = false
                             }
+                        }
+                    )
+                    AppActionType.Rename -> AppAction(
+                        labelRes = R.string.rename,
+                        isVisible = { it.isMainUserApp() },
+                        onClick = {
+                            _showBottomSheet.value = false
+                            _showRenameDialog.value = true
                         }
                     )
                     AppActionType.AppInfo -> AppAction(

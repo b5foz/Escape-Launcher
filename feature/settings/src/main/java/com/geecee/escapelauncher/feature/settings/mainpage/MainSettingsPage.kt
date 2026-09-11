@@ -394,6 +394,13 @@ fun MainSettingsPage(
                     onClick = { onNavigate(SettingsNavKey.HiddenApps) })
             }
 
+            item(key = "manage_renamed_apps") {
+                SettingsNavigationItem(
+                    label = stringResource(id = R.string.manage_renamed_apps),
+                    false,
+                    onClick = { onNavigate(SettingsNavKey.RenamedApps) })
+            }
+
             item(key = "manage_open_challenges") {
                 SettingsNavigationItem(
                     label = stringResource(id = R.string.manage_open_challenges),

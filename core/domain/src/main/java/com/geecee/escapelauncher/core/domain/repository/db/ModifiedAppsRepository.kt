@@ -4,6 +4,7 @@ import com.geecee.escapelauncher.core.model.ModifiedApp
 import kotlinx.coroutines.flow.Flow
 
 interface ModifiedAppsRepository {
+    fun getAllModifiedAppsFlow(): Flow<List<ModifiedApp>>
     fun getHiddenPackageIdsFlow(): Flow<List<String>>
     fun getChallengePackageIdsFlow(): Flow<List<String>>
     fun getFavouriteAppsInOrderFlow(): Flow<List<ModifiedApp>>
